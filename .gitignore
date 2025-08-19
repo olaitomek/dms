@@ -1,0 +1,26 @@
+*/target/
+target/
+*/*.log
+*/*.log.gz
+.flattened-pom.xml
+.local/
+
+### IntelliJ IDEA ###
+.idea
+*.iws
+*.iml
+*.ipr
+
+### NetBeans ###
+/nbproject/private/
+/nbbuild/
+/dist/
+/nbdist/
+/.nb-gradle/
+build/
+!**/src/main/**/build/
+!**/src/test/**/build/
+/Document
+
+### VS Code ###
+.vscode/
