@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="utf-8"?>
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-4.17.xsd">
+    <changeSet id="1" author="auto">
+        <createTable tableName="binary_content">
+            <column name="content_hash" type="varchar(255)">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="filename" type="varchar(255)"/>
+            <column name="content_type" type="varchar(255)"/>
+            <column name="data" type="blob"/>
+        </createTable>
+
+        <createTable tableName="bucket">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="bucket_metadata">
+            <column name="bucket_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meta_key" type="varchar(255)"/>
+            <column name="meta_value" type="varchar(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="bucket_metadata" baseColumnNames="bucket_id"
+                                 referencedTableName="bucket" referencedColumnNames="id"/>
+
+        <createTable tableName="category">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+            <column name="parent_id" type="bigint"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="category" baseColumnNames="parent_id"
+                                 referencedTableName="category" referencedColumnNames="id"/>
+
+        <createTable tableName="tag">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="name" type="varchar(255)"/>
+        </createTable>
+
+        <createTable tableName="document">
+            <column name="id" type="bigint" autoIncrement="true">
+                <constraints primaryKey="true"/>
+            </column>
+            <column name="bucket_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="content_hash" type="varchar(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="uploaded_at" type="timestamp"/>
+            <column name="text_content" type="clob"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="document" baseColumnNames="bucket_id"
+                                 referencedTableName="bucket" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="document" baseColumnNames="content_hash"
+                                 referencedTableName="binary_content" referencedColumnNames="content_hash"/>
+
+        <createTable tableName="document_metadata">
+            <column name="document_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="meta_key" type="varchar(255)"/>
+            <column name="meta_value" type="varchar(255)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="document_metadata" baseColumnNames="document_id"
+                                 referencedTableName="document" referencedColumnNames="id"/>
+
+        <createTable tableName="document_category">
+            <column name="document_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="category_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="document_category" baseColumnNames="document_id"
+                                 referencedTableName="document" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="document_category" baseColumnNames="category_id"
+                                 referencedTableName="category" referencedColumnNames="id"/>
+
+        <createTable tableName="document_tag">
+            <column name="document_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+            <column name="tag_id" type="bigint">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="document_tag" baseColumnNames="document_id"
+                                 referencedTableName="document" referencedColumnNames="id"/>
+
+        <addForeignKeyConstraint baseTableName="document_tag" baseColumnNames="tag_id"
+                                 referencedTableName="tag" referencedColumnNames="id"/>
+    </changeSet>
+</databaseChangeLog>

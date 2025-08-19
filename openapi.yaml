@@ -1,0 +1,339 @@
+openapi: 3.0.1
+info:
+  title: Document Management API
+  version: "1.0"
+paths:
+  /api/buckets:
+    post:
+      summary: Create bucket
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/BucketCreateDTO'
+      responses:
+        '200':
+          description: Bucket created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BucketDTO'
+  /api/buckets/{id}:
+    get:
+      summary: Get bucket by id
+      parameters:
+        - in: path
+          name: id
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Bucket
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/BucketDTO'
+        '404':
+          description: Not found
+  /api/categories:
+    post:
+      summary: Create category
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryCreateDTO'
+      responses:
+        '200':
+          description: Category created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryDTO'
+    get:
+      summary: List categories
+      responses:
+        '200':
+          description: List of categories
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/CategoryDTO'
+  /api/tags:
+    post:
+      summary: Create tag
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TagCreateDTO'
+      responses:
+        '200':
+          description: Tag created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TagDTO'
+    get:
+      summary: List tags
+      responses:
+        '200':
+          description: List of tags
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/TagDTO'
+  /api/buckets/{bucketId}/documents:
+    post:
+      summary: Upload document
+      parameters:
+        - in: path
+          name: bucketId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      requestBody:
+        required: true
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                file:
+                  type: string
+                  format: binary
+                metadata:
+                  type: object
+                  additionalProperties:
+                    type: string
+                categoryIds:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+                tagIds:
+                  type: array
+                  items:
+                    type: integer
+                    format: int64
+                textContent:
+                  type: string
+      responses:
+        '200':
+          description: Uploaded document
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DocumentDTO'
+    get:
+      summary: List documents in bucket
+      parameters:
+        - in: path
+          name: bucketId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: metaKey
+          schema:
+            type: string
+        - in: query
+          name: metaValue
+          schema:
+            type: string
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Page of documents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDocumentDTO'
+  /api/buckets/{bucketId}/documents/search:
+    get:
+      summary: Search documents in bucket
+      parameters:
+        - in: path
+          name: bucketId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: query
+          name: q
+          required: true
+          schema:
+            type: string
+        - in: query
+          name: categoryIds
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - in: query
+          name: tagIds
+          schema:
+            type: array
+            items:
+              type: integer
+              format: int64
+        - in: query
+          name: page
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: size
+          schema:
+            type: integer
+            default: 10
+      responses:
+        '200':
+          description: Page of documents
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PageDocumentDTO'
+  /api/buckets/{bucketId}/documents/{docId}/download:
+    get:
+      summary: Download document
+      parameters:
+        - in: path
+          name: bucketId
+          required: true
+          schema:
+            type: integer
+            format: int64
+        - in: path
+          name: docId
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: Binary file
+          content:
+            application/octet-stream:
+              schema:
+                type: string
+                format: binary
+components:
+  schemas:
+    BucketCreateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+      required: [name]
+    BucketDTO:
+      allOf:
+        - $ref: '#/components/schemas/BucketCreateDTO'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+    CategoryCreateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+        parentId:
+          type: integer
+          format: int64
+          nullable: true
+      required: [name]
+    CategoryDTO:
+      allOf:
+        - $ref: '#/components/schemas/CategoryCreateDTO'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+    TagCreateDTO:
+      type: object
+      properties:
+        name:
+          type: string
+      required: [name]
+    TagDTO:
+      allOf:
+        - $ref: '#/components/schemas/TagCreateDTO'
+        - type: object
+          properties:
+            id:
+              type: integer
+              format: int64
+    DocumentDTO:
+      type: object
+      properties:
+        id:
+          type: integer
+          format: int64
+        bucketId:
+          type: integer
+          format: int64
+        contentHash:
+          type: string
+        uploadedAt:
+          type: string
+          format: date-time
+        metadata:
+          type: object
+          additionalProperties:
+            type: string
+        categoryIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        tagIds:
+          type: array
+          items:
+            type: integer
+            format: int64
+        textContent:
+          type: string
+    PageDocumentDTO:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/DocumentDTO'
+        totalElements:
+          type: integer
+          format: int64
+        totalPages:
+          type: integer
+        size:
+          type: integer
+        number:
+          type: integer

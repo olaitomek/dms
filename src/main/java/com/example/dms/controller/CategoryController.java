@@ -1,5 +1,7 @@
 package com.example.dms.controller;
 
+import com.example.dms.dto.CategoryCreateDTO;
+import com.example.dms.dto.CategoryDTO;
 import com.example.dms.model.Category;
 import com.example.dms.repository.CategoryRepository;
 import org.springframework.web.bind.annotation.*;
@@ -16,16 +18,23 @@ public class CategoryController {
     }
 
     @PostMapping
-    public Category create(@RequestBody Category c) {
-        if (c.getParent() != null && c.getParent().getId() != null) {
-            Category p = repo.findById(c.getParent().getId()).orElseThrow();
-            c.setParent(p);
+    public CategoryDTO create(@RequestBody CategoryCreateDTO c) {
+        Category entity = new Category();
+        entity.setName(c.name());
+        if (c.parentId() != null) {
+            Category p = repo.findById(c.parentId()).orElseThrow();
+            entity.setParent(p);
         }
-        return repo.save(c);
+        return toDto(repo.save(entity));
     }
 
     @GetMapping
-    public List<Category> list() {
-        return repo.findAll();
+    public List<CategoryDTO> list() {
+        return repo.findAll().stream().map(this::toDto).toList();
+    }
+
+    private CategoryDTO toDto(Category c) {
+        Long parentId = c.getParent() != null ? c.getParent().getId() : null;
+        return new CategoryDTO(c.getId(), c.getName(), parentId);
     }
 }
