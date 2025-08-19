@@ -29,7 +29,8 @@
             <column name="meta_value" type="varchar(255)"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="bucket_metadata" baseColumnNames="bucket_id"
+        <addForeignKeyConstraint constraintName="fk_bucket_metadata_bucket"
+                                 baseTableName="bucket_metadata" baseColumnNames="bucket_id"
                                  referencedTableName="bucket" referencedColumnNames="id"/>
 
         <createTable tableName="category">
@@ -40,7 +41,8 @@
             <column name="parent_id" type="bigint"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="category" baseColumnNames="parent_id"
+        <addForeignKeyConstraint constraintName="fk_category_parent"
+                                 baseTableName="category" baseColumnNames="parent_id"
                                  referencedTableName="category" referencedColumnNames="id"/>
 
         <createTable tableName="tag">
@@ -64,10 +66,12 @@
             <column name="text_content" type="clob"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="document" baseColumnNames="bucket_id"
+        <addForeignKeyConstraint constraintName="fk_document_bucket"
+                                 baseTableName="document" baseColumnNames="bucket_id"
                                  referencedTableName="bucket" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="document" baseColumnNames="content_hash"
+        <addForeignKeyConstraint constraintName="fk_document_binary_content"
+                                 baseTableName="document" baseColumnNames="content_hash"
                                  referencedTableName="binary_content" referencedColumnNames="content_hash"/>
 
         <createTable tableName="document_metadata">
@@ -78,7 +82,8 @@
             <column name="meta_value" type="varchar(255)"/>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="document_metadata" baseColumnNames="document_id"
+        <addForeignKeyConstraint constraintName="fk_document_metadata_document"
+                                 baseTableName="document_metadata" baseColumnNames="document_id"
                                  referencedTableName="document" referencedColumnNames="id"/>
 
         <createTable tableName="document_category">
@@ -90,10 +95,12 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="document_category" baseColumnNames="document_id"
+        <addForeignKeyConstraint constraintName="fk_document_category_document"
+                                 baseTableName="document_category" baseColumnNames="document_id"
                                  referencedTableName="document" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="document_category" baseColumnNames="category_id"
+        <addForeignKeyConstraint constraintName="fk_document_category_category"
+                                 baseTableName="document_category" baseColumnNames="category_id"
                                  referencedTableName="category" referencedColumnNames="id"/>
 
         <createTable tableName="document_tag">
@@ -105,10 +112,12 @@
             </column>
         </createTable>
 
-        <addForeignKeyConstraint baseTableName="document_tag" baseColumnNames="document_id"
+        <addForeignKeyConstraint constraintName="fk_document_tag_document"
+                                 baseTableName="document_tag" baseColumnNames="document_id"
                                  referencedTableName="document" referencedColumnNames="id"/>
 
-        <addForeignKeyConstraint baseTableName="document_tag" baseColumnNames="tag_id"
+        <addForeignKeyConstraint constraintName="fk_document_tag_tag"
+                                 baseTableName="document_tag" baseColumnNames="tag_id"
                                  referencedTableName="tag" referencedColumnNames="id"/>
     </changeSet>
 </databaseChangeLog>
