@@ -2,8 +2,6 @@ package com.example.dms.model;
 
 import jakarta.persistence.*;
 
-import java.util.*;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
@@ -22,9 +20,6 @@ public class Tag {
 
     @FullTextField
     private String name;
-
-    @ManyToMany(mappedBy = "tags")
-    private Set<Document> documents = new HashSet<>();
 
     // getters & setters
 }

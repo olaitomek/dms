@@ -13,7 +13,7 @@ import org.hibernate.search.mapper.pojo.mapping.definition.annotation.*;
 @AllArgsConstructor
 @Builder
 @EqualsAndHashCode(onlyExplicitlyIncluded = true)
-@ToString(exclude = {"documents"})
+@ToString(exclude = {"parent", "subcategories"})
 public class Category {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -28,7 +28,4 @@ public class Category {
 
     @OneToMany(mappedBy = "parent", cascade = CascadeType.ALL)
     private Set<Category> subcategories = new HashSet<>();
-
-    @ManyToMany(mappedBy = "categories")
-    private Set<Document> documents = new HashSet<>();
 }

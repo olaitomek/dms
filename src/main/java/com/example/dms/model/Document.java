@@ -1,6 +1,5 @@
 package com.example.dms.model;
 
-import com.fasterxml.jackson.annotation.JsonBackReference;
 import jakarta.persistence.*;
 import java.time.LocalDateTime;
 import java.util.*;
@@ -23,7 +22,6 @@ public class Document {
     @ManyToOne(optional=false)
     @JoinColumn(name="bucket_id")
     @IndexedEmbedded()
-    @JsonBackReference
     private Bucket bucket;
 
     @ManyToOne(optional=false)
